@@ -1,0 +1,44 @@
+version: "3.9"
+services:
+
+  api:
+    restart: always
+    build:
+      context: ./api
+    container_name: api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/code
+    environment:
+      - ALLOWED_HOSTS=0.0.0.0,localhost,127.0.0.1
+      - DEBUG=true
+      - SECRET_KEY=secret
+      - DATABASE_URL=postgres://postgres:password@postgres:5432/postgres
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000
+    depends_on:
+      - postgres
+    command: make migrate server
+
+  react:
+    build:
+      context: ./react
+    container_name: react
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./react:/app
+    environment:
+      - REACT_APP_BASE_URL=http://localhost:8000
+    command: npm start
+
+  postgres:
+    restart: always
+    image: postgres:13
+    environment:
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - pgdata:/var/lib/postgresql/data/
+
+volumes:
+  pgdata:
