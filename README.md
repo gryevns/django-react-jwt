@@ -13,7 +13,7 @@ Django & ReactJS template using docker-compose for local development.
 
 ```sh
 # start api/react/postgres services
-docker-compose up
+docker compose up
 
 # create a superuser
 docker-compose exec api bash
